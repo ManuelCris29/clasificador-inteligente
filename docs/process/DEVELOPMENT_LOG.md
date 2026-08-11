@@ -405,3 +405,30 @@ así que no hay riesgo de enviar un id de modelo inválido. No requirió cambio 
 Resultado:
 **Todos los criterios de aceptación de SPEC §26 se cumplen.** El proyecto está completo
 respecto al alcance de SPEC §4.1.
+
+---
+
+## 2026-08-11 — [FASE 4c] Publicación en GitHub (SPEC §25)
+
+Qué hago:
+Creo el repositorio remoto `ManuelCris29/clasificador-inteligente` y subo la rama `main`.
+
+Decisiones:
+1. **Repositorio público**, por decisión explícita del usuario tras plantearle la
+   alternativa. Se le advirtió que lo ya publicado puede quedar cacheado aunque después
+   se cambie a privado.
+2. **Nombre `clasificador-inteligente`**: GitHub no admite espacios.
+
+Auditoría previa a la publicación (ejecutada, cuatro comprobaciones):
+- `.env` no está rastreado por Git.
+- Ningún patrón de secreto en **todo** el historial (`sk-ant-api`, `gho_`, `ghp_`,
+  `github_pat_`, claves AWS, bloques PEM de clave privada).
+- Ninguna asignación sospechosa de credencial en el código versionado.
+- Ningún `.db`, `.env`, `.pem` ni `.key` entre los archivos versionados.
+
+Verificación posterior: 10 commits y 35 archivos en el remoto; consulta a la API de
+GitHub confirma que `.env` **no** existe en el repositorio publicado.
+
+Resultado:
+<https://github.com/ManuelCris29/clasificador-inteligente> — público, rama `main`,
+sincronizado con el local.
