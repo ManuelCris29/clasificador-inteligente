@@ -366,3 +366,42 @@ Pendiente, requiere decisión del usuario:
 
 Resultado:
 Todos los criterios de SPEC §26 se cumplen salvo el control de versiones.
+
+---
+
+## 2026-08-11 — [FASE 4b] Control de versiones y verificación con Postman (SPEC §25, §26)
+
+Qué hago:
+Inicializo el repositorio Git con la secuencia de commits de SPEC §25 (autorizado por el
+usuario) y ejecuto la colección de Postman con `newman`.
+
+Decisiones:
+1. **Nueve commits temáticos, no uno solo.** Siguen el orden sugerido por SPEC §25 y cada
+   uno deja el proyecto en un estado explicable. Motivo: el historial es documentación;
+   un único commit "initial" no permite ver en qué orden se construyeron las garantías.
+2. **`.claude/skills/development-explainer/SKILL.MD` se versiona**, porque `CLAUDE.md` lo
+   declara obligatorio y por tanto es parte del proyecto. `.claude/settings.local.json`
+   se añade a `.gitignore`: es configuración de máquina.
+3. **Rama por defecto `main`.**
+
+Verificación de seguridad (ejecutada antes y después de los commits):
+- `git check-ignore` confirma que `.env`, `solicitudes.db` y `settings.local.json` están
+  excluidos.
+- `git log --all -p | grep "^+.*sk-ant-"` no encuentra ninguna clave real: los seis
+  resultados son menciones del prefijo en documentación y en el literal falso del test.
+- 35 archivos versionados; árbol de trabajo limpio.
+
+Ejecución de la colección de Postman (`npx newman`, servidor `uvicorn` real):
+**7 peticiones, 17 aserciones, 0 fallos.** Incluye los cinco casos de SPEC §21, la
+comprobación de vocabularios cerrados y la prueba de inyección de prompt. Latencia media
+1.3 s por clasificación con `claude-haiku-4-5`; la petición inválida se resuelve en 5 ms
+porque no llega a llamar al LLM.
+
+Observación:
+El usuario cambió `CLAUDE_MODEL` a `claude-haiku-4-5` en su `.env` con un espacio final.
+Se verificó que el cargador de configuración lo recorta (`repr` = `'claude-haiku-4-5'`),
+así que no hay riesgo de enviar un id de modelo inválido. No requirió cambio de código.
+
+Resultado:
+**Todos los criterios de aceptación de SPEC §26 se cumplen.** El proyecto está completo
+respecto al alcance de SPEC §4.1.
