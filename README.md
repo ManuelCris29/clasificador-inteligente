@@ -159,9 +159,40 @@ Decisiones ya materializadas en el código:
 - **Modelo y `max_tokens` son configurables**, para ajustar costo y latencia sin
   tocar código.
 
+**Recuento de solicitudes procesadas.** No hay un contador en memoria: toda
+solicitud clasificada se persiste, así que el número es una consulta y no un
+estado que pueda desincronizarse.
+
+```sql
+SELECT COUNT(*) FROM solicitudes;                      -- total
+SELECT categoria, COUNT(*) FROM solicitudes GROUP BY categoria;
+```
+
 Pendiente para más adelante, ya habilitado por la arquitectura: caché de
 solicitudes repetidas, procesamiento asíncrono y colas, y una capa de reglas
 deterministas previa que evite llamar al LLM cuando no hace falta.
+
+---
+
+## Decisiones técnicas verificadas con Context7
+
+Registro de las decisiones que una consulta a documentación actualizada
+determinó, con su motivo y la alternativa descartada.
+
+**Salida estructurada del modelo → `output_config.format` / `messages.parse()`**
+
+- *Motivo:* es el mecanismo nativo vigente del SDK de Anthropic para forzar una
+  respuesta conforme a un JSON Schema, y valida el resultado contra ese esquema.
+- *Alternativas descartadas:*
+  - Forzar JSON mediante `tool_choice` con una herramienta ficticia — patrón
+    anterior, hoy innecesario.
+  - Prefill del turno `assistant` (empezar la respuesta con `{`) — **devuelve 400**
+    en los modelos actuales.
+  - El parámetro de nivel superior `output_format`, que está deprecado.
+- *Verificación adicional:* se inspeccionó el SDK instalado para confirmar la
+  firma real. `ParsedMessage.parsed_output` resultó ser `Optional`, así que el
+  código comprueba `None` explícitamente en lugar de asumir que siempre hay
+  salida — y también el caso `stop_reason == "refusal"`.
 
 ---
 
