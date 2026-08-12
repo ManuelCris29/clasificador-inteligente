@@ -83,11 +83,22 @@ Este **sí** se sube: documenta qué variables hacen falta sin revelar sus valor
 
 ```bash
 mkdir -p app/{api/routes,schemas,services,models,repositories,database,core,prompts} tests
-# un __init__.py vacío en cada carpeta de Python
+```
+
+Eso solo crea las carpetas, vacías. Falta el segundo comando, el que de verdad
+las convierte en paquetes de Python:
+
+```bash
+for d in app app/api app/api/routes app/schemas app/services app/models app/repositories app/database app/core tests; do
+  touch "$d/__init__.py"
+done
 ```
 
 Un `__init__.py` (aunque esté vacío) convierte una carpeta en **paquete
 importable**. Sin él, `from app.schemas.solicitud import ...` falla.
+
+Fíjate en que `app/prompts/` **no** está en esa lista: no contiene código
+Python, solo el `.txt` del prompt (paso 4), así que no necesita ser un paquete.
 
 ---
 
