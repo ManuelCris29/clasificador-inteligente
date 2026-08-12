@@ -79,6 +79,40 @@ DATABASE_URL=sqlite:///./solicitudes.db
 
 Este **sí** se sube: documenta qué variables hacen falta sin revelar sus valores.
 
+### `.env` — tu copia local, con tu clave real
+
+`.env.example` es solo la plantilla. **Aquí es donde falta un paso**: hay que
+copiarla y rellenarla con una clave de verdad, o nada de lo que sigue va a poder
+llamar a Claude.
+
+```bash
+cp .env.example .env          # Windows: copy .env.example .env
+```
+
+Y editar `.env` reemplazando el marcador:
+
+```env
+ANTHROPIC_API_KEY=sk-ant-api03-...tu-clave-real...
+DATABASE_URL=sqlite:///./solicitudes.db
+```
+
+La clave se consigue en <https://console.anthropic.com> → **API Keys** →
+**Create Key**. Cópiala en ese momento: la consola no vuelve a mostrarla
+completa después.
+
+**Por qué en este punto y no antes:** hasta ahora solo había estructura de
+carpetas, nada que necesitara la clave. A partir del Paso 2 (`config.py` la
+exige como campo obligatorio) el proyecto ya no arranca sin ella. Puedes verificarlo
+tú mismo — con `.env.example` solo (sin `.env`), esto falla:
+
+```bash
+python -c "from app.core.config import get_settings; get_settings()"
+# ValidationError: anthropic_api_key ... Field required
+```
+
+`.env` está en `.gitignore` (Paso 1); `.env.example` no. Esa es la diferencia
+entre "documenta qué hace falta" y "tiene el secreto de verdad".
+
 ### Estructura de paquetes
 
 ```bash
