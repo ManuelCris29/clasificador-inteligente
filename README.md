@@ -20,14 +20,48 @@ POST /solicitudes → FastAPI → Pydantic (entrada) → Claude
 
 Requiere Python 3.11+.
 
+**1. Crea y activa un entorno virtual.** Aísla las dependencias de este proyecto
+del Python del sistema, de modo que sus versiones no choquen con las de otros
+proyectos ni ensucien la instalación global.
+
+```bash
+python -m venv .venv
+
+# Windows (PowerShell)
+.venv\Scripts\Activate.ps1
+# Windows (cmd)
+.venv\Scripts\activate.bat
+# macOS / Linux
+source .venv/bin/activate
+```
+
+Sabrás que está activo porque el prompt muestra `(.venv)`. Verifícalo:
+
+```bash
+python -c "import sys; print(sys.prefix != sys.base_prefix)"   # → True
+```
+
+**2. Instala las dependencias y configura la clave.**
+
 ```bash
 pip install -r requirements.txt
 
 cp .env.example .env          # Windows: copy .env.example .env
 # edita .env y pega tu clave de https://console.anthropic.com
+```
 
+**3. Arranca el servidor.**
+
+```bash
 uvicorn app.main:app --reload
 ```
+
+`.venv/` está en `.gitignore`: el entorno no se sube, cada quien crea el suyo a
+partir de `requirements.txt`.
+
+> Si en PowerShell la activación falla con *"la ejecución de scripts está
+> deshabilitada"*, ejecuta una vez:
+> `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`
 
 Documentación interactiva en <http://127.0.0.1:8000/docs>.
 Esquema OpenAPI en <http://127.0.0.1:8000/openapi.json>.

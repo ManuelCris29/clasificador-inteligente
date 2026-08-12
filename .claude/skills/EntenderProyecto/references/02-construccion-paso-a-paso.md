@@ -18,6 +18,29 @@ primera pieza obligatoria.
 
 ## Paso 1 — Cimientos
 
+### Entorno virtual — lo primero de todo
+
+```bash
+python -m venv .venv
+.venv\Scripts\activate        # Windows;  macOS/Linux: source .venv/bin/activate
+```
+
+**Por qué antes que nada:** sin entorno virtual, `pip install` escribe en el
+Python del sistema. Dos proyectos que necesiten versiones distintas de la misma
+librería entran en conflicto, y no hay forma de saber qué dependencias son
+realmente de *este* proyecto. Un `venv` es una carpeta con su propio intérprete y
+sus propios paquetes: se activa al trabajar, se borra al terminar y no deja
+rastro.
+
+Cómo comprobar que está activo:
+
+```bash
+python -c "import sys; print(sys.prefix != sys.base_prefix)"   # → True
+```
+
+`.venv/` va en `.gitignore`: no se sube. Lo que se comparte es
+`requirements.txt`, y cada quien reconstruye su entorno con él.
+
 ### `requirements.txt`
 
 ```text
@@ -31,7 +54,8 @@ pytest>=8.3             # pruebas
 httpx>=0.27             # cliente HTTP que usa el TestClient de FastAPI
 ```
 
-Ocho dependencias, ninguna decorativa. Instalar: `pip install -r requirements.txt`.
+Ocho dependencias, ninguna decorativa. Con el entorno virtual activo:
+`pip install -r requirements.txt`.
 
 ### `.gitignore`
 
